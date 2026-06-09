@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="home.title">工具制造公司 - 专业园林工具、电动工具制造商</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="images/logo.png" alt="公司名称 Logo">
+                <span class="company-name" data-i18n="company.name">您的公司名称</span>
+            </a>
+
+            <nav class="nav-menu" id="navMenu">
+                <ul>
+                    <li><a href="/" class="active"><i class="fas fa-home"></i> <span data-i18n="nav.home">首页</span></a></li>
+                    <li><a href="products.html"><i class="fas fa-box"></i> <span data-i18n="nav.products">产品</span></a></li>
+                    <li><a href="/about"><span data-i18n="nav.about">关于我们</span></a></li>
+                    <li><a href="/contact"><i class="fas fa-map-marker-alt"></i> <span data-i18n="nav.contact">联系</span></a></li>
+                </ul>
+            </nav>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+                <span data-i18n="nav.menu">菜单</span>
+            </button>
+
+            <div class="contact-info">
+                <a href="tel:0579-87228379" class="phone-link">
+                    <i class="fas fa-phone"></i>
+                    <span data-i18n="nav.phone">电话</span>
+                </a>
+            </div>
+
+            <!-- 语言切换按钮 -->
+            <button class="lang-switch-btn" id="langSwitchBtn" onclick="toggleLanguage()">
+                <i class="fas fa-globe"></i> <span data-i18n="lang.switch">English</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 轮播图区域 -->
+    <section class="hero-slider">
+        <div class="slider-container" id="sliderContainer">
+            <div class="slide active">
+                <img src="images/banner1.jpg" alt="产品展示1">
+                <div class="slide-content">
+                    <h2 data-i18n="home.hero.slide1.title">专业工具制造商</h2>
+                    <p data-i18n="home.hero.slide1.desc">高品质园林工具与电动工具</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images/banner2.jpg" alt="产品展示2">
+                <div class="slide-content">
+                    <h2 data-i18n="home.hero.slide2.title">创新技术</h2>
+                    <p data-i18n="home.hero.slide2.desc">领先的锂电系列解决方案</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images/banner3.jpg" alt="产品展示3">
+                <div class="slide-content">
+                    <h2 data-i18n="home.hero.slide3.title">品质保证</h2>
+                    <p data-i18n="home.hero.slide3.desc">多年行业经验值得信赖</p>
+                </div>
+            </div>
+        </div>
+        <button class="slider-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+        <button class="slider-btn next" onclick="changeSlide(1)">&#10095;</button>
+        <div class="slider-dots" id="sliderDots">
+            <span class="dot active" onclick="currentSlide(0)"></span>
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+        </div>
+    </section>
+
+    <!-- 产品分类 -->
+    <section class="product-categories">
+        <div class="container">
+            <h2 class="section-title" data-i18n="home.products.title">产品中心</h2>
+            <div class="categories-grid">
+                <a href="products.html" class="category-card">
+                    <div class="category-image">
+                        <img src="images/category-new.jpg" alt="新品">
+                        <span class="category-badge">NEW</span>
+                    </div>
+                    <h3 data-i18n="home.products.new">新品</h3>
+                    <p data-i18n="home.products.new.desc">最新产品系列</p>
+                </a>
+
+                <a href="products.html" class="category-card">
+                    <div class="category-image">
+                        <img src="images/category-garden.jpg" alt="园林工具">
+                    </div>
+                    <h3 data-i18n="home.products.garden">园林工具</h3>
+                    <p data-i18n="home.products.garden.desc">专业园林设备</p>
+                </a>
+
+                <a href="products.html" class="category-card">
+                    <div class="category-image">
+                        <img src="images/category-power.jpg" alt="电动工具">
+                    </div>
+                    <h3 data-i18n="home.products.power">电动工具</h3>
+                    <p data-i18n="home.products.power.desc">高效电动工具</p>
+                </a>
+
+                <a href="products.html" class="category-card">
+                    <div class="category-image">
+                        <img src="images/category-lithium.jpg" alt="锂电系列">
+                    </div>
+                    <h3 data-i18n="home.products.lithium">锂电系列</h3>
+                    <p data-i18n="home.products.lithium.desc">便携式锂电工具</p>
+                </a>
+            </div>
+
+            <div class="view-more">
+                <a href="products.html" class="btn-primary"><span data-i18n="home.products.viewMore">查看更多</span> <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 自主品牌展示 -->
+    <section class="brands-section">
+        <div class="container">
+            <h2 class="section-title" data-i18n="home.brands.title">自主品牌</h2>
+            <div class="brands-grid">
+                <div class="brand-item">
+                    <img src="images/brand1.png" alt="品牌1">
+                </div>
+                <div class="brand-item">
+                    <img src="images/brand2.png" alt="品牌2">
+                </div>
+                <div class="brand-item">
+                    <img src="images/brand3.png" alt="品牌3">
+                </div>
+                <div class="brand-item">
+                    <img src="images/brand4.png" alt="品牌4">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 底部信息 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p data-i18n="company.copyright">COPYRIGHT © 您的公司名称 ALL RIGHTS RESERVED.</p>
+                    <a href="http://beian.miit.gov.cn/" target="_blank" data-i18n="company.icp">浙ICP备XXXXXXXX号-X</a>
+                </div>
+                <div class="footer-links">
+                    <a href="/privacy" data-i18n="footer.privacy">隐私政策</a>
+                    <a href="/terms" data-i18n="footer.terms">使用条款</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 浮动联系方式 -->
+    <div class="floating-contact">
+        <a href="tel:0579-89292888" class="contact-btn phone">
+            <i class="fas fa-phone"></i>
+        </a>
+        <a href="mailto:sales@yourcompany.com" class="contact-btn email">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <button class="contact-btn back-to-top" onclick="scrollToTop()">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // 语言切换功能
+        function toggleLanguage() {
+            const newLang = i18n.currentLang === 'zh' ? 'en' : 'zh';
+            i18n.setLanguage(newLang);
+        }
+    </script>
+</body>
+</html>

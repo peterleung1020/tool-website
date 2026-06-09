@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - 工具制造公司</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 后台管理特定样式 */
+        .admin-container {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
+        }
+
+        .admin-header {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .admin-header h1 {
+            font-size: 28px;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .admin-tab {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .admin-tab:hover,
+        .admin-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .admin-section {
+            display: none;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .admin-section h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #e55a2b;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #003d6b;
+        }
+
+        .preview-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--light-color);
+            border-radius: 5px;
+        }
+
+        .preview-box h3 {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .config-list {
+            list-style: none;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .config-item-info {
+            flex: 1;
+        }
+
+        .config-item-label {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .config-item-value {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .config-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-tabs {
+                overflow-x: auto;
+            }
+
+            .admin-tab {
+                white-space: nowrap;
+            }
+
+            .config-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .config-item-actions {
+                margin-top: 10px;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="images/logo.png" alt="Logo">
+                <span class="company-name">后台管理</span>
+            </a>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> 返回首页</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-cog"></i> 网站内容管理</h1>
+            <p>修改网站显示的内容和配置（数据保存在浏览器本地）</p>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showTab('company')">公司信息</button>
+                <button class="admin-tab" onclick="showTab('contact')">联系方式</button>
+                <button class="admin-tab" onclick="showTab('products')">产品管理</button>
+                <button class="admin-tab" onclick="showTab('banners')">轮播图设置</button>
+                <button class="admin-tab" onclick="showTab('export')">导出配置</button>
+            </div>
+        </div>
+
+        <!-- 提示信息 -->
+        <div id="alertBox" class="alert"></div>
+
+        <!-- 公司信息 -->
+        <section id="companySection" class="admin-section active">
+            <h2>公司基本信息</h2>
+            <form id="companyForm">
+                <div class="form-group">
+                    <label>公司名称 *</label>
+                    <input type="text" id="companyName" placeholder="请输入公司名称">
+                </div>
+                <div class="form-group">
+                    <label>ICP备案号</label>
+                    <input type="text" id="icpNumber" placeholder="浙ICP备XXXXXXXX号-X">
+                </div>
+                <div class="form-group">
+                    <label>公司简介</label>
+                    <textarea id="companyDesc" placeholder="请输入公司简介"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 保存</button>
+            </form>
+
+            <div class="preview-box">
+                <h3>预览</h3>
+                <p><strong>公司名称：</strong><span id="previewCompanyName">-</span></p>
+                <p><strong>备案号：</strong><span id="previewIcp">-</span></p>
+            </div>
+        </section>
+
+        <!-- 联系方式 -->
+        <section id="contactSection" class="admin-section">
+            <h2>联系方式设置</h2>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label>联系电话 *</label>
+                    <input type="tel" id="phoneNumber" placeholder="0579-87228379">
+                </div>
+                <div class="form-group">
+                    <label>联系邮箱</label>
+                    <input type="email" id="emailAddress" placeholder="sales@yourcompany.com">
+                </div>
+                <div class="form-group">
+                    <label>联系地址</label>
+                    <textarea id="address" placeholder="请输入公司地址"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 保存</button>
+            </form>
+
+            <div class="preview-box">
+                <h3>预览</h3>
+                <p><strong>电话：</strong><span id="previewPhone">-</span></p>
+                <p><strong>邮箱：</strong><span id="previewEmail">-</span></p>
+                <p><strong>地址：</strong><span id="previewAddress">-</span></p>
+            </div>
+        </section>
+
+        <!-- 产品管理 -->
+        <section id="productsSection" class="admin-section">
+            <h2>产品信息管理</h2>
+            <form id="productForm">
+                <div class="form-group">
+                    <label>产品名称 *</label>
+                    <input type="text" id="productName" placeholder="请输入产品名称">
+                </div>
+                <div class="form-group">
+                    <label>产品分类</label>
+                    <select id="productCategory">
+                        <option value="new">新品</option>
+                        <option value="garden">园林工具</option>
+                        <option value="power">电动工具</option>
+                        <option value="lithium">锂电系列</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>产品描述</label>
+                    <textarea id="productDesc" placeholder="请输入产品描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>产品价格</label>
+                    <input type="number" id="productPrice" placeholder="0.00" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>产品图片</label>
+                    <input type="file" id="productImage" accept="image/*">
+                    <img id="productImagePreview" class="image-preview" style="display:none;">
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> 添加产品</button>
+            </form>
+
+            <div class="preview-box">
+                <h3>已添加的产品列表</h3>
+                <ul id="productsList" class="config-list">
+                    <li class="config-item">
+                        <div class="config-item-info">
+                            <div class="config-item-label">示例产品</div>
+                            <div class="config-item-value">分类：新品 | 价格：¥199.00</div>
+                        </div>
+                        <div class="config-item-actions">
+                            <button class="btn btn-secondary btn-small"><i class="fas fa-edit"></i> 编辑</button>
+                            <button class="btn btn-primary btn-small" style="background:#dc3545;"><i class="fas fa-trash"></i> 删除</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 轮播图设置 -->
+        <section id="bannersSection" class="admin-section">
+            <h2>轮播图管理</h2>
+            <form id="bannerForm">
+                <div class="form-group">
+                    <label>轮播图标题</label>
+                    <input type="text" id="bannerTitle" placeholder="请输入轮播图标题">
+                </div>
+                <div class="form-group">
+                    <label>轮播图描述</label>
+                    <textarea id="bannerDesc" placeholder="请输入轮播图描述"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>轮播图序号</label>
+                    <select id="bannerIndex">
+                        <option value="0">第1张</option>
+                        <option value="1">第2张</option>
+                        <option value="2">第3张</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>上传图片</label>
+                    <input type="file" id="bannerImage" accept="image/*">
+                    <img id="bannerImagePreview" class="image-preview" style="display:none;">
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 保存轮播图</button>
+            </form>
+        </section>
+
+        <!-- 导出配置 -->
+        <section id="exportSection" class="admin-section">
+            <h2>配置导出与导入</h2>
+            <div class="form-group">
+                <h3>导出配置</h3>
+                <p>将所有设置导出为JSON文件，方便备份和迁移。</p>
+                <button class="btn btn-primary" onclick="exportConfig()"><i class="fas fa-download"></i> 导出配置文件</button>
+            </div>
+
+            <div class="form-group" style="margin-top: 40px;">
+                <h3>导入配置</h3>
+                <p>从之前导出的JSON文件中恢复配置。</p>
+                <input type="file" id="importFile" accept=".json" style="margin-bottom: 15px;">
+                <button class="btn btn-secondary" onclick="importConfig()"><i class="fas fa-upload"></i> 导入配置文件</button>
+            </div>
+
+            <div class="form-group" style="margin-top: 40px;">
+                <h3>重置所有数据</h3>
+                <p style="color: #dc3545;">警告：此操作将清除所有本地保存的配置，无法恢复！</p>
+                <button class="btn" style="background:#dc3545; color:white;" onclick="resetAllData()"><i class="fas fa-exclamation-triangle"></i> 重置所有数据</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 切换标签页
+        function showTab(tabName) {
+            // 隐藏所有section
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // 移除所有tab的active类
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 显示选中的section
+            const sectionMap = {
+                'company': 'companySection',
+                'contact': 'contactSection',
+                'products': 'productsSection',
+                'banners': 'bannersSection',
+                'export': 'exportSection'
+            };
+
+            document.getElementById(sectionMap[tabName]).classList.add('active');
+
+            // 激活当前tab
+            event.target.classList.add('active');
+        }
+
+        // 显示提示信息
+        function showAlert(message, type = 'success') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type}`;
+            alertBox.style.display = 'block';
+
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+
+        // 加载已保存的数据
+        function loadSavedData() {
+            // 公司信息
+            const companyName = localStorage.getItem('companyName') || '';
+            const icpNumber = localStorage.getItem('icpNumber') || '';
+            const companyDesc = localStorage.getItem('companyDesc') || '';
+
+            document.getElementById('companyName').value = companyName;
+            document.getElementById('icpNumber').value = icpNumber;
+            document.getElementById('companyDesc').value = companyDesc;
+
+            updatePreview('company');
+
+            // 联系方式
+            const phone = localStorage.getItem('phoneNumber') || '';
+            const email = localStorage.getItem('emailAddress') || '';
+            const address = localStorage.getItem('address') || '';
+
+            document.getElementById('phoneNumber').value = phone;
+            document.getElementById('emailAddress').value = email;
+            document.getElementById('address').value = address;
+
+            updatePreview('contact');
+        }
+
+        // 更新预览
+        function updatePreview(type) {
+            if (type === 'company') {
+                document.getElementById('previewCompanyName').textContent =
+                    document.getElementById('companyName').value || '-';
+                document.getElementById('previewIcp').textContent =
+                    document.getElementById('icpNumber').value || '-';
+            } else if (type === 'contact') {
+                document.getElementById('previewPhone').textContent =
+                    document.getElementById('phoneNumber').value || '-';
+                document.getElementById('previewEmail').textContent =
+                    document.getElementById('emailAddress').value || '-';
+                document.getElementById('previewAddress').textContent =
+                    document.getElementById('address').value || '-';
+            }
+        }
+
+        // 保存公司信息
+        document.getElementById('companyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            localStorage.setItem('companyName', document.getElementById('companyName').value);
+            localStorage.setItem('icpNumber', document.getElementById('icpNumber').value);
+            localStorage.setItem('companyDesc', document.getElementById('companyDesc').value);
+
+            updatePreview('company');
+            showAlert('公司信息保存成功！');
+        });
+
+        // 保存联系方式
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            localStorage.setItem('phoneNumber', document.getElementById('phoneNumber').value);
+            localStorage.setItem('emailAddress', document.getElementById('emailAddress').value);
+            localStorage.setItem('address', document.getElementById('address').value);
+
+            updatePreview('contact');
+            showAlert('联系方式保存成功！');
+        });
+
+        // 监听输入变化实时更新预览
+        document.getElementById('companyName').addEventListener('input', () => updatePreview('company'));
+        document.getElementById('icpNumber').addEventListener('input', () => updatePreview('company'));
+        document.getElementById('phoneNumber').addEventListener('input', () => updatePreview('contact'));
+        document.getElementById('emailAddress').addEventListener('input', () => updatePreview('contact'));
+        document.getElementById('address').addEventListener('input', () => updatePreview('contact'));
+
+        // 导出配置
+        function exportConfig() {
+            const config = {
+                companyName: localStorage.getItem('companyName') || '',
+                icpNumber: localStorage.getItem('icpNumber') || '',
+                companyDesc: localStorage.getItem('companyDesc') || '',
+                phoneNumber: localStorage.getItem('phoneNumber') || '',
+                emailAddress: localStorage.getItem('emailAddress') || '',
+                address: localStorage.getItem('address') || '',
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `website-config-${new Date().getTime()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showAlert('配置导出成功！');
+        }
+
+        // 导入配置
+        function importConfig() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showAlert('请选择要导入的文件', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const config = JSON.parse(e.target.result);
+
+                    Object.keys(config).forEach(key => {
+                        if (key !== 'exportDate') {
+                            localStorage.setItem(key, config[key]);
+                        }
+                    });
+
+                    loadSavedData();
+                    showAlert('配置导入成功！请刷新页面查看效果。');
+                } catch (error) {
+                    showAlert('文件格式错误', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 重置所有数据
+        function resetAllData() {
+            if (confirm('确定要重置所有数据吗？此操作不可恢复！')) {
+                localStorage.clear();
+                showAlert('所有数据已重置，请刷新页面。');
+                setTimeout(() => location.reload(), 1500);
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+        });
+    </script>
+</body>
+</html>
