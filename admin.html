@@ -211,6 +211,86 @@
             font-size: 12px;
         }
 
+        /* 树形结构样式 */
+        .tree-container {
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: var(--light-color);
+        }
+
+        .tree-item {
+            padding: 8px 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tree-item:hover {
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .tree-item.selected {
+            background: rgba(255, 107, 53, 0.2);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .tree-item.category {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .tree-item.product {
+            color: var(--text-color);
+        }
+
+        .tree-children {
+            margin-left: 25px;
+            border-left: 2px dashed #ddd;
+            padding-left: 10px;
+        }
+
+        .tree-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .tree-actions {
+            margin-left: auto;
+            display: none;
+            gap: 5px;
+        }
+
+        .tree-item:hover .tree-actions {
+            display: flex;
+        }
+
+        .tree-btn {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            background: var(--white);
+            color: var(--text-color);
+        }
+
+        .tree-btn:hover {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .tree-btn.delete:hover {
+            background: #dc3545;
+        }
+
         @media (max-width: 768px) {
             .admin-tabs {
                 overflow-x: auto;
@@ -320,51 +400,64 @@
 
         <!-- 产品管理 -->
         <section id="productsSection" class="admin-section">
-            <h2>产品信息管理</h2>
-            <form id="productForm">
-                <div class="form-group">
-                    <label>产品名称 *</label>
-                    <input type="text" id="productName" placeholder="请输入产品名称">
+            <h2>产品层级管理</h2>
+            
+            <!-- 分类和产品树形结构 -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <!-- 左侧：树形结构 -->
+                <div>
+                    <h3>产品分类树</h3>
+                    <div class="tree-container" id="categoryTree">
+                        <!-- 动态生成树形结构 -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="addCategory()" style="margin-top: 15px;">
+                        <i class="fas fa-folder-plus"></i> 添加分类
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label>产品分类</label>
-                    <select id="productCategory">
-                        <option value="new">新品</option>
-                        <option value="garden">园林工具</option>
-                        <option value="power">电动工具</option>
-                        <option value="lithium">锂电系列</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>产品描述</label>
-                    <textarea id="productDesc" placeholder="请输入产品描述"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>产品价格</label>
-                    <input type="number" id="productPrice" placeholder="0.00" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label>产品图片</label>
-                    <input type="file" id="productImage" accept="image/*">
-                    <img id="productImagePreview" class="image-preview" style="display:none;">
-                </div>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> 添加产品</button>
-            </form>
 
-            <div class="preview-box">
-                <h3>已添加的产品列表</h3>
-                <ul id="productsList" class="config-list">
-                    <li class="config-item">
-                        <div class="config-item-info">
-                            <div class="config-item-label">示例产品</div>
-                            <div class="config-item-value">分类：新品 | 价格：¥199.00</div>
+                <!-- 右侧：产品表单 -->
+                <div>
+                    <h3>添加/编辑产品</h3>
+                    <form id="productForm">
+                        <div class="form-group">
+                            <label>产品名称 *</label>
+                            <input type="text" id="productName" placeholder="请输入产品名称">
                         </div>
-                        <div class="config-item-actions">
-                            <button class="btn btn-secondary btn-small"><i class="fas fa-edit"></i> 编辑</button>
-                            <button class="btn btn-primary btn-small" style="background:#dc3545;"><i class="fas fa-trash"></i> 删除</button>
+                        <div class="form-group">
+                            <label>所属分类 *</label>
+                            <select id="productCategory">
+                                <option value="">请选择分类</option>
+                            </select>
                         </div>
-                    </li>
-                </ul>
+                        <div class="form-group">
+                            <label>父级产品（可选，用于创建子产品）</label>
+                            <select id="parentProduct">
+                                <option value="">无（顶级产品）</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>产品描述</label>
+                            <textarea id="productDesc" placeholder="请输入产品描述"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>产品价格</label>
+                            <input type="number" id="productPrice" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>产品图片</label>
+                            <input type="file" id="productImage" accept="image/*">
+                            <img id="productImagePreview" class="image-preview" style="display:none;">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> 添加产品</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearProductForm()"><i class="fas fa-redo"></i> 清空</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 产品列表 -->
+            <div class="preview-box" style="margin-top: 30px;">
+                <h3>所有产品列表（含层级关系）</h3>
+                <div id="productsTreeView"></div>
             </div>
         </section>
 
@@ -596,9 +689,340 @@
             }
         }
 
+        // ========== 产品层级管理功能 ==========
+        
+        // 产品分类和产品数据结构
+        let categories = JSON.parse(localStorage.getItem('categories')) || [
+            { id: 'cat_1', name: '新品', type: 'category', children: [] },
+            { id: 'cat_2', name: '园林工具', type: 'category', children: [] },
+            { id: 'cat_3', name: '电动工具', type: 'category', children: [] },
+            { id: 'cat_4', name: '锂电系列', type: 'category', children: [] }
+        ];
+        
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let selectedCategory = null;
+
+        // 保存分类和产品到LocalStorage
+        function saveCategoriesAndProducts() {
+            localStorage.setItem('categories', JSON.stringify(categories));
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
+        // 渲染分类树
+        function renderCategoryTree() {
+            const treeContainer = document.getElementById('categoryTree');
+            treeContainer.innerHTML = renderTreeItems(categories, 0);
+            
+            // 绑定点击事件
+            document.querySelectorAll('.tree-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('tree-btn')) {
+                        document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selectedCategory = this.dataset.id;
+                        updateProductCategorySelect();
+                    }
+                });
+            });
+        }
+
+        // 递归渲染树节点
+        function renderTreeItems(items, level) {
+            let html = '';
+            items.forEach(item => {
+                const icon = item.type === 'category' ? '<i class="fas fa-folder"></i>' : '<i class="fas fa-box"></i>';
+                const indent = level * 25;
+                
+                html += `
+                    <div class="tree-item ${item.type}" data-id="${item.id}" style="padding-left: ${10 + indent}px;">
+                        <span class="tree-icon">${icon}</span>
+                        <span>${item.name}</span>
+                        <div class="tree-actions">
+                            ${item.type === 'category' ? `<button class="tree-btn" onclick="addSubCategory('${item.id}')"><i class="fas fa-plus"></i></button>` : ''}
+                            <button class="tree-btn delete" onclick="deleteItem('${item.id}', '${item.type}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+                
+                if (item.children && item.children.length > 0) {
+                    html += `<div class="tree-children">${renderTreeItems(item.children, level + 1)}</div>`;
+                }
+            });
+            return html;
+        }
+
+        // 添加分类
+        function addCategory() {
+            const name = prompt('请输入分类名称：');
+            if (name && name.trim()) {
+                const newCategory = {
+                    id: 'cat_' + Date.now(),
+                    name: name.trim(),
+                    type: 'category',
+                    children: []
+                };
+                categories.push(newCategory);
+                saveCategoriesAndProducts();
+                renderCategoryTree();
+                updateProductCategorySelect();
+                showAlert('分类添加成功！');
+            }
+        }
+
+        // 添加子分类
+        function addSubCategory(parentId) {
+            const name = prompt('请输入子分类名称：');
+            if (name && name.trim()) {
+                const parent = findItemById(categories, parentId);
+                if (parent) {
+                    const newCategory = {
+                        id: 'cat_' + Date.now(),
+                        name: name.trim(),
+                        type: 'category',
+                        children: []
+                    };
+                    parent.children.push(newCategory);
+                    saveCategoriesAndProducts();
+                    renderCategoryTree();
+                    updateProductCategorySelect();
+                    showAlert('子分类添加成功！');
+                }
+            }
+        }
+
+        // 删除项目
+        function deleteItem(id, type) {
+            if (!confirm(`确定要删除这个${type === 'category' ? '分类' : '产品'}吗？`)) return;
+            
+            if (type === 'category') {
+                removeCategory(categories, id);
+            } else {
+                products = products.filter(p => p.id !== id);
+            }
+            
+            saveCategoriesAndProducts();
+            renderCategoryTree();
+            renderProductsView();
+            updateProductCategorySelect();
+            updateParentProductSelect();
+            showAlert('删除成功！');
+        }
+
+        // 递归查找并删除分类
+        function removeCategory(items, id) {
+            const index = items.findIndex(item => item.id === id);
+            if (index !== -1) {
+                items.splice(index, 1);
+                return true;
+            }
+            for (let item of items) {
+                if (item.children && removeCategory(item.children, id)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // 递归查找项目
+        function findItemById(items, id) {
+            for (let item of items) {
+                if (item.id === id) return item;
+                if (item.children) {
+                    const found = findItemById(item.children, id);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        // 更新产品分类下拉框
+        function updateProductCategorySelect() {
+            const select = document.getElementById('productCategory');
+            select.innerHTML = '<option value="">请选择分类</option>';
+            
+            function addOptions(items, prefix = '') {
+                items.forEach(item => {
+                    if (item.type === 'category') {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = prefix + item.name;
+                        select.appendChild(option);
+                        
+                        if (item.children && item.children.length > 0) {
+                            addOptions(item.children, prefix + '  ');
+                        }
+                    }
+                });
+            }
+            
+            addOptions(categories);
+        }
+
+        // 更新父级产品下拉框
+        function updateParentProductSelect() {
+            const select = document.getElementById('parentProduct');
+            select.innerHTML = '<option value="">无（顶级产品）</option>';
+            
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                select.appendChild(option);
+            });
+        }
+
+        // 渲染产品视图（含层级）
+        function renderProductsView() {
+            const container = document.getElementById('productsTreeView');
+            
+            if (products.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">暂无产品</p>';
+                return;
+            }
+            
+            // 构建树形结构
+            const topLevelProducts = products.filter(p => !p.parentId);
+            let html = '<ul style="list-style: none; padding: 0;">';
+            
+            topLevelProducts.forEach(product => {
+                html += renderProductItem(product, 0);
+            });
+            
+            html += '</ul>';
+            container.innerHTML = html;
+        }
+
+        // 渲染单个产品项（递归）
+        function renderProductItem(product, level) {
+            const indent = level * 30;
+            const children = products.filter(p => p.parentId === product.id);
+            
+            let html = `
+                <li style="margin: 10px 0;">
+                    <div style="padding: 10px; background: white; border: 1px solid #ddd; border-radius: 4px; margin-left: ${indent}px;">
+                        <strong>${product.name}</strong>
+                        <span style="color: #666; margin-left: 10px;">分类: ${getCategoryName(product.categoryId)}</span>
+                        <span style="color: #ff6b35; margin-left: 10px;">¥${product.price || '0.00'}</span>
+                        ${children.length > 0 ? `<span style="color: #999; margin-left: 10px;">(${children.length}个子产品)</span>` : ''}
+                        <div style="float: right;">
+                            <button class="btn btn-small btn-secondary" onclick="editProduct('${product.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-small" style="background:#dc3545; color:white;" onclick="deleteItem('${product.id}', 'product')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+            `;
+            
+            if (children.length > 0) {
+                html += '<ul style="list-style: none; padding: 0; margin-top: 10px;">';
+                children.forEach(child => {
+                    html += renderProductItem(child, level + 1);
+                });
+                html += '</ul>';
+            }
+            
+            html += '</li>';
+            return html;
+        }
+
+        // 获取分类名称
+        function getCategoryName(categoryId) {
+            const category = findItemById(categories, categoryId);
+            return category ? category.name : '未分类';
+        }
+
+        // 添加产品表单提交
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('productName').value.trim();
+            const categoryId = document.getElementById('productCategory').value;
+            const parentId = document.getElementById('parentProduct').value;
+            const desc = document.getElementById('productDesc').value.trim();
+            const price = document.getElementById('productPrice').value;
+            
+            if (!name) {
+                showAlert('请输入产品名称', 'error');
+                return;
+            }
+            
+            if (!categoryId) {
+                showAlert('请选择产品分类', 'error');
+                return;
+            }
+            
+            const newProduct = {
+                id: 'prod_' + Date.now(),
+                name: name,
+                categoryId: categoryId,
+                parentId: parentId || null,
+                description: desc,
+                price: price || '0.00',
+                image: '',
+                createdAt: new Date().toISOString()
+            };
+            
+            products.push(newProduct);
+            saveCategoriesAndProducts();
+            
+            clearProductForm();
+            renderProductsView();
+            updateParentProductSelect();
+            showAlert('产品添加成功！');
+        });
+
+        // 清空产品表单
+        function clearProductForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('parentProduct').value = '';
+            document.getElementById('productDesc').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productImage').value = '';
+            document.getElementById('productImagePreview').style.display = 'none';
+        }
+
+        // 编辑产品
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productCategory').value = product.categoryId;
+            document.getElementById('parentProduct').value = product.parentId || '';
+            document.getElementById('productDesc').value = product.description || '';
+            document.getElementById('productPrice').value = product.price;
+            
+            // 滚动到表单顶部
+            document.getElementById('productForm').scrollIntoView({ behavior: 'smooth' });
+            
+            showAlert('已加载产品信息，修改后点击"添加产品"保存', 'success');
+        }
+
+        // 图片预览
+        document.getElementById('productImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('productImagePreview');
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 页面加载时初始化产品管理
+        function initProductManagement() {
+            renderCategoryTree();
+            renderProductsView();
+            updateProductCategorySelect();
+            updateParentProductSelect();
+        }
+
         // 页面加载时初始化
         window.addEventListener('DOMContentLoaded', function() {
             loadSavedData();
+            initProductManagement();
         });
     </script>
 </body>
