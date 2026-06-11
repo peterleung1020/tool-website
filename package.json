@@ -1,0 +1,26 @@
+{
+  "name": "tool-website",
+  "version": "2.0.0",
+  "description": "Tool manufacturing company website with Contentful Headless CMS",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080 -o",
+    "setup": "echo 'Visit http://localhost:8080/setup-contentful.html to configure Contentful'",
+    "import-model": "contentful space import --space-id $CONTENTFUL_SPACE_ID --content-file contentful-model.json",
+    "export-data": "contentful space export --space-id $CONTENTFUL_SPACE_ID",
+    "deploy": "git add . && git commit -m 'Update content' && git push origin main"
+  },
+  "keywords": [
+    "website",
+    "cms",
+    "contentful",
+    "headless-cms",
+    "tools"
+  ],
+  "author": "Your Company",
+  "license": "MIT",
+  "devDependencies": {
+    "contentful-cli": "^2.0.0",
+    "http-server": "^14.1.1"
+  }
+}

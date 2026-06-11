@@ -1,0 +1,189 @@
+{
+  "contentTypes": [
+    {
+      "sys": {
+        "id": "companyInfo"
+      },
+      "name": "公司信息",
+      "description": "网站基本信息和公司资料",
+      "fields": [
+        {
+          "id": "name",
+          "name": "公司名称",
+          "type": "Symbol",
+          "required": true
+        },
+        {
+          "id": "icp",
+          "name": "ICP备案号",
+          "type": "Symbol"
+        },
+        {
+          "id": "description",
+          "name": "公司描述",
+          "type": "Text"
+        },
+        {
+          "id": "phone",
+          "name": "联系电话",
+          "type": "Symbol"
+        },
+        {
+          "id": "email",
+          "name": "邮箱",
+          "type": "Symbol"
+        },
+        {
+          "id": "address",
+          "name": "地址",
+          "type": "Text"
+        }
+      ]
+    },
+    {
+      "sys": {
+        "id": "banner"
+      },
+      "name": "轮播图",
+      "description": "首页轮播图片",
+      "fields": [
+        {
+          "id": "title",
+          "name": "标题",
+          "type": "Symbol",
+          "required": true
+        },
+        {
+          "id": "description",
+          "name": "描述",
+          "type": "Text"
+        },
+        {
+          "id": "image",
+          "name": "图片",
+          "type": "Link",
+          "linkType": "Asset",
+          "required": true
+        },
+        {
+          "id": "order",
+          "name": "排序",
+          "type": "Integer",
+          "required": true
+        }
+      ]
+    },
+    {
+      "sys": {
+        "id": "category"
+      },
+      "name": "产品分类",
+      "description": "产品分类目录",
+      "fields": [
+        {
+          "id": "name",
+          "name": "分类名称",
+          "type": "Symbol",
+          "required": true
+        },
+        {
+          "id": "description",
+          "name": "分类描述",
+          "type": "Text"
+        },
+        {
+          "id": "image",
+          "name": "分类图片",
+          "type": "Link",
+          "linkType": "Asset"
+        },
+        {
+          "id": "badge",
+          "name": "徽章标签",
+          "type": "Symbol"
+        },
+        {
+          "id": "order",
+          "name": "排序",
+          "type": "Integer"
+        }
+      ]
+    },
+    {
+      "sys": {
+        "id": "product"
+      },
+      "name": "产品",
+      "description": "产品信息(支持层级结构)",
+      "fields": [
+        {
+          "id": "name",
+          "name": "产品名称",
+          "type": "Symbol",
+          "required": true
+        },
+        {
+          "id": "category",
+          "name": "所属分类",
+          "type": "Link",
+          "linkType": "Entry",
+          "required": true
+        },
+        {
+          "id": "parentProduct",
+          "name": "父级产品",
+          "type": "Link",
+          "linkType": "Entry"
+        },
+        {
+          "id": "description",
+          "name": "产品描述",
+          "type": "Text"
+        },
+        {
+          "id": "price",
+          "name": "价格",
+          "type": "Number"
+        },
+        {
+          "id": "image",
+          "name": "产品图片",
+          "type": "Link",
+          "linkType": "Asset"
+        },
+        {
+          "id": "featured",
+          "name": "是否推荐",
+          "type": "Boolean"
+        }
+      ]
+    },
+    {
+      "sys": {
+        "id": "brand"
+      },
+      "name": "品牌Logo",
+      "description": "自主品牌Logo展示",
+      "fields": [
+        {
+          "id": "name",
+          "name": "品牌名称",
+          "type": "Symbol",
+          "required": true
+        },
+        {
+          "id": "logo",
+          "name": "品牌Logo",
+          "type": "Link",
+          "linkType": "Asset",
+          "required": true
+        },
+        {
+          "id": "order",
+          "name": "排序",
+          "type": "Integer"
+        }
+      ]
+    }
+  ]
+}
