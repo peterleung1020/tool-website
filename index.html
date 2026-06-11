@@ -173,20 +173,15 @@
         </button>
     </div>
 
+    <script src="js/site-data.js"></script>
     <script src="js/i18n.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/config-loader.js"></script>
     <script>
         // 语言切换功能
         function toggleLanguage() {
             const newLang = i18n.currentLang === 'zh' ? 'en' : 'zh';
             i18n.setLanguage(newLang);
         }
-
-        // 页面加载时从 config.json 动态加载内容
-        window.addEventListener('DOMContentLoaded', async function() {
-            await loadConfig();
-        });
     </script>
 </body>
 </html>
