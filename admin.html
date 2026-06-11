@@ -492,7 +492,20 @@
 
         <!-- 导出配置 -->
         <section id="exportSection" class="admin-section">
-            <h2>配置导出与导入</h2>
+            <h2>配置导出与同步</h2>
+            
+            <!-- 应用到网站按钮 -->
+            <div class="form-group" style="background: #fff3cd; padding: 20px; border-radius: 5px; margin-bottom: 30px;">
+                <h3 style="color: #856404;"><i class="fas fa-sync"></i> 同步到网站</h3>
+                <p style="color: #856404;">将后台管理的所有修改应用到网站，所有用户将看到最新内容。</p>
+                <button class="btn btn-primary" onclick="applyToWebsite()" style="background: #28a745;">
+                    <i class="fas fa-check-circle"></i> 应用修改并生成配置文件
+                </button>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    点击后会自动生成 config.json 文件，您需要手动提交到 GitHub 并推送。
+                </p>
+            </div>
+
             <div class="form-group">
                 <h3>导出配置</h3>
                 <p>将所有设置导出为JSON文件，方便备份和迁移。</p>
@@ -1017,6 +1030,148 @@
             renderProductsView();
             updateProductCategorySelect();
             updateParentProductSelect();
+        }
+
+        // ========== 应用到网站功能 ==========
+        
+        // 将后台管理的修改应用到 config.json
+        function applyToWebsite() {
+            if (!confirm('确定要将所有修改应用到网站吗？这将生成新的 config.json 文件。')) return;
+
+            try {
+                // 构建完整的配置对象
+                const fullConfig = {
+                    company: {
+                        name: localStorage.getItem('companyName') || '工具制造公司',
+                        icp: localStorage.getItem('icpNumber') || '浙ICP备XXXXXXXX号-X',
+                        description: localStorage.getItem('companyDesc') || ''
+                    },
+                    contact: {
+                        phone: localStorage.getItem('phoneNumber') || '0579-87228379',
+                        email: localStorage.getItem('emailAddress') || 'sales@yourcompany.com',
+                        address: localStorage.getItem('address') || ''
+                    },
+                    banners: [
+                        {
+                            title: '专业工具制造商',
+                            description: '高品质园林工具与电动工具',
+                            image: 'images/banner1.jpg'
+                        },
+                        {
+                            title: '创新技术',
+                            description: '领先的锂电系列解决方案',
+                            image: 'images/banner2.jpg'
+                        },
+                        {
+                            title: '品质保证',
+                            description: '多年行业经验值得信赖',
+                            image: 'images/banner3.jpg'
+                        }
+                    ],
+                    categories: categories.map(cat => ({
+                        id: cat.id,
+                        name: cat.name,
+                        description: getCategoryDescription(cat.id),
+                        image: getCategoryImage(cat.id)
+                    })),
+                    products: products.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        categoryId: p.categoryId,
+                        parentId: p.parentId,
+                        description: p.description,
+                        price: p.price,
+                        image: p.image || ''
+                    })),
+                    brands: [
+                        'images/brand1.png',
+                        'images/brand2.png',
+                        'images/brand3.png',
+                        'images/brand4.png'
+                    ],
+                    lastUpdated: new Date().toISOString()
+                };
+
+                // 下载 config.json 文件
+                downloadJSON(fullConfig, 'config.json');
+                
+                showAlert('配置文件已生成！请按照以下步骤操作：\n1. 将下载的 config.json 替换到项目根目录\n2. 执行 git add config.json && git commit -m "Update site config" && git push\n3. 等待 1-2 分钟，GitHub Pages 自动部署后生效', 'success');
+                
+                // 显示操作指引
+                showDeploymentInstructions();
+                
+            } catch (error) {
+                console.error(error);
+                showAlert('生成配置文件失败：' + error.message, 'error');
+            }
+        }
+
+        // 获取分类描述
+        function getCategoryDescription(categoryId) {
+            const descriptions = {
+                'cat_1': '最新产品系列',
+                'cat_2': '专业园林设备',
+                'cat_3': '高效电动工具',
+                'cat_4': '便携式锂电工具'
+            };
+            return descriptions[categoryId] || '';
+        }
+
+        // 获取分类图片
+        function getCategoryImage(categoryId) {
+            const images = {
+                'cat_1': 'images/category-new.jpg',
+                'cat_2': 'images/category-garden.jpg',
+                'cat_3': 'images/category-power.jpg',
+                'cat_4': 'images/category-lithium.jpg'
+            };
+            return images[categoryId] || '';
+        }
+
+        // 下载 JSON 文件
+        function downloadJSON(data, filename) {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 显示部署指引
+        function showDeploymentInstructions() {
+            const instructions = `
+<div style="background: #e7f3ff; padding: 20px; border-radius: 5px; margin-top: 20px; border-left: 4px solid #0066cc;">
+    <h4 style="margin-top: 0; color: #0066cc;"><i class="fas fa-info-circle"></i> 下一步操作</h4>
+    <ol style="margin: 10px 0; padding-left: 20px;">
+        <li><strong>下载的文件：</strong>config.json 已自动下载到您的电脑</li>
+        <li><strong>替换文件：</strong>将下载的 config.json 复制到 <code>d:\\QODER\\tool-website\\</code> 目录，替换原有文件</li>
+        <li><strong>提交到 Git：</strong>在 PowerShell 中执行以下命令：
+            <pre style="background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto;"><code>cd d:/QODER/tool-website
+git add config.json admin.html index.html js/config-loader.js
+git commit -m "Update site configuration from admin panel"
+git push</code></pre>
+        </li>
+        <li><strong>等待部署：</strong>GitHub Pages 会在 1-2 分钟内自动部署</li>
+        <li><strong>查看效果：</strong>刷新 https://peterleung1020.github.io/tool-website/ 即可看到更新</li>
+    </ol>
+    <p style="margin-bottom: 0;"><strong>提示：</strong>以后每次修改后，只需重复步骤 1-3 即可！</p>
+</div>
+            `;
+            
+            const exportSection = document.getElementById('exportSection');
+            const existingInstructions = exportSection.querySelector('.deployment-instructions');
+            if (existingInstructions) {
+                existingInstructions.remove();
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'deployment-instructions';
+            div.innerHTML = instructions;
+            exportSection.appendChild(div);
         }
 
         // 页面加载时初始化

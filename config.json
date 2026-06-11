@@ -1,0 +1,63 @@
+{
+  "company": {
+    "name": "工具制造公司",
+    "icp": "浙ICP备XXXXXXXX号-X",
+    "description": "专业园林工具、电动工具制造商"
+  },
+  "contact": {
+    "phone": "0579-87228379",
+    "email": "sales@yourcompany.com",
+    "address": ""
+  },
+  "banners": [
+    {
+      "title": "专业工具制造商",
+      "description": "高品质园林工具与电动工具",
+      "image": "images/banner1.jpg"
+    },
+    {
+      "title": "创新技术",
+      "description": "领先的锂电系列解决方案",
+      "image": "images/banner2.jpg"
+    },
+    {
+      "title": "品质保证",
+      "description": "多年行业经验值得信赖",
+      "image": "images/banner3.jpg"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat_1",
+      "name": "新品",
+      "description": "最新产品系列",
+      "image": "images/category-new.jpg"
+    },
+    {
+      "id": "cat_2",
+      "name": "园林工具",
+      "description": "专业园林设备",
+      "image": "images/category-garden.jpg"
+    },
+    {
+      "id": "cat_3",
+      "name": "电动工具",
+      "description": "高效电动工具",
+      "image": "images/category-power.jpg"
+    },
+    {
+      "id": "cat_4",
+      "name": "锂电系列",
+      "description": "便携式锂电工具",
+      "image": "images/category-lithium.jpg"
+    }
+  ],
+  "products": [],
+  "brands": [
+    "images/brand1.png",
+    "images/brand2.png",
+    "images/brand3.png",
+    "images/brand4.png"
+  ],
+  "lastUpdated": "2026-06-11T00:00:00Z"
+}
